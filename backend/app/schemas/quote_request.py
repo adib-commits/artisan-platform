@@ -2,6 +2,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
+from typing import Literal
 
 class QuoteRequestCreate(BaseModel):
     service_id: int
@@ -19,3 +20,6 @@ class QuoteRequestResponse(QuoteRequestCreate):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+class QuoteRequestStatusUpdate(BaseModel):
+    status: Literal["pending", "accepted", "rejected", "completed"]

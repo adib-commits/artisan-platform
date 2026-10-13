@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from fastapi import APIRouter, Depends, HTTPException
 
 from app.db.database import get_db
 from app.models.quote_request import QuoteRequest
@@ -8,6 +9,11 @@ from app.schemas.quote_request import (
     QuoteRequestResponse,
 )
 
+from app.schemas.quote_request import (
+    QuoteRequestCreate,
+    QuoteRequestResponse,
+    QuoteRequestStatusUpdate,
+)
 
 router = APIRouter(
     prefix="/quote-requests",
@@ -31,3 +37,62 @@ def create_quote_request(
     db.refresh(new_quote_request)
 
     return new_quote_request
+
+@router.get(
+    "",
+    response_model=list[QuoteRequestResponse],
+)
+def get_quote_requests(
+    db: Session = Depends(get_db),
+):
+    return db.query(QuoteRequest).all()
+
+@router.get(
+    "/{quote_request_id}",
+    response_model=QuoteRequestResponse,
+)
+def get_quote_request(
+    quote_request_id: int,
+    db: Session = Depends(get_db),
+):
+    quote_request = (
+        db.query(QuoteRequest)
+        .filter(QuoteRequest.id == quote_request_id)
+        .first()
+    )
+
+    if quote_request is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Quote request not found",
+        )
+
+    return quote_request
+
+@router.patch(
+    "/{quote_request_id}",
+    response_model=QuoteRequestResponse,
+)
+def update_quote_request_status(
+    quote_request_id: int,
+    status_update: QuoteRequestStatusUpdate,
+    db: Session = Depends(get_db),
+):
+    quote_request = (
+        db.query(QuoteRequest)
+        .filter(QuoteRequest.id == quote_request_id)
+        .first()
+    )
+
+    if quote_request is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Quote request not found",
+        )
+
+    quote_request.status = status_update.status
+
+    db.commit()
+    db.refresh(quote_request)
+
+    return quote_request
