@@ -2,6 +2,8 @@ import Link from "next/link";
 
 import { getServices } from "@/services/serviceApi";
 
+export const instant = false;
+
 export default async function ServicesPage() {
   const services = await getServices();
 
