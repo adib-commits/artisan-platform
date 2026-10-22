@@ -3,6 +3,12 @@
 import Link from "next/link";
 import { useState } from "react";
 
+const navigation = [
+  { href: "/", label: "Accueil" },
+  { href: "/services", label: "Nos services" },
+  { href: "/quote", label: "Demander un devis" },
+];
+
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -11,99 +17,81 @@ export default function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="flex items-center justify-between py-4">
+    <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 backdrop-blur">
+      <div className="mx-auto flex min-h-20 max-w-7xl items-center justify-between px-6">
+        <Link
+          href="/"
+          onClick={closeMenu}
+          className="flex items-center gap-3"
+        >
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-950 text-lg font-black text-amber-400">
+            AR
+          </div>
+
+          <div>
+            <p className="text-lg font-black tracking-tight text-slate-950">
+              AzurRenoPro
+            </p>
+            <p className="text-xs font-medium text-slate-500">
+              Rénovation & aménagement
+            </p>
+          </div>
+        </Link>
+
+        <nav className="hidden items-center gap-8 md:flex">
+          {navigation.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="text-sm font-semibold text-slate-600 transition hover:text-amber-600"
+            >
+              {item.label}
+            </Link>
+          ))}
+
           <Link
-            href="/"
-            onClick={closeMenu}
-            className="text-xl font-bold tracking-tight text-gray-900"
+            href="/appointment"
+            className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-amber-500 hover:text-slate-950"
           >
-            Artisan Platform
+            Prendre rendez-vous
           </Link>
+        </nav>
 
-          {/* Navigation ordinateur */}
-          <nav className="hidden items-center gap-6 md:flex">
-            <Link
-              href="/"
-              className="text-sm font-medium text-gray-700 transition hover:text-amber-600"
-            >
-              Accueil
-            </Link>
+        <button
+          type="button"
+          onClick={() => setMenuOpen((open) => !open)}
+          aria-label="Ouvrir le menu"
+          aria-expanded={menuOpen}
+          className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-2xl text-slate-950 md:hidden"
+        >
+          {menuOpen ? "×" : "☰"}
+        </button>
+      </div>
 
-            <Link
-              href="/services"
-              className="text-sm font-medium text-gray-700 transition hover:text-amber-600"
-            >
-              Services
-            </Link>
-
-            <Link
-              href="/quote"
-              className="text-sm font-medium text-gray-700 transition hover:text-amber-600"
-            >
-              Demander un devis
-            </Link>
+      {menuOpen && (
+        <nav className="border-t border-slate-200 bg-white px-6 py-5 md:hidden">
+          <div className="mx-auto flex max-w-7xl flex-col gap-2">
+            {navigation.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={closeMenu}
+                className="rounded-xl px-4 py-3 font-semibold text-slate-700 transition hover:bg-slate-50"
+              >
+                {item.label}
+              </Link>
+            ))}
 
             <Link
               href="/appointment"
-              className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-700"
+              onClick={closeMenu}
+              className="mt-2 rounded-xl bg-slate-950 px-4 py-3 text-center font-bold text-white"
             >
-              Rendez-vous
+              Prendre rendez-vous
             </Link>
-          </nav>
-
-          {/* Bouton mobile */}
-          <button
-            type="button"
-            className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-300 text-xl text-gray-900 md:hidden"
-            onClick={() => setMenuOpen((open) => !open)}
-            aria-label="Ouvrir le menu"
-            aria-expanded={menuOpen}
-          >
-            {menuOpen ? "×" : "☰"}
-          </button>
-        </div>
-
-        {/* Navigation mobile */}
-        {menuOpen && (
-          <nav className="border-t border-gray-200 py-4 md:hidden">
-            <div className="flex flex-col gap-2">
-              <Link
-                href="/"
-                onClick={closeMenu}
-                className="rounded-lg px-3 py-3 font-medium text-gray-700 hover:bg-gray-100"
-              >
-                Accueil
-              </Link>
-
-              <Link
-                href="/services"
-                onClick={closeMenu}
-                className="rounded-lg px-3 py-3 font-medium text-gray-700 hover:bg-gray-100"
-              >
-                Services
-              </Link>
-
-              <Link
-                href="/quote"
-                onClick={closeMenu}
-                className="rounded-lg px-3 py-3 font-medium text-gray-700 hover:bg-gray-100"
-              >
-                Demander un devis
-              </Link>
-
-              <Link
-                href="/appointment"
-                onClick={closeMenu}
-                className="mt-2 rounded-lg bg-gray-900 px-3 py-3 text-center font-semibold text-white"
-              >
-                Prendre rendez-vous
-              </Link>
-            </div>
-          </nav>
-        )}
-      </div>
+          </div>
+        </nav>
+      )}
     </header>
   );
 }
