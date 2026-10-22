@@ -67,6 +67,13 @@ PostgreSQL
 Port 5432
 ```
 
+### Documentation technique
+
+La documentation détaillée de l'architecture et de la base de données est disponible ici :
+
+- [Architecture du MVP](docs/architecture.md)
+- [Schéma de la base de données](docs/database.md)
+
 ## Structure du projet
 
 ```text
